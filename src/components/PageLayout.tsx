@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
-import { usePathname, useRouter } from 'next/navigation';
+import { usePathname } from 'next/navigation';
 import { Sun, Moon } from 'lucide-react';
 import TransitionLink from './TransitionLink';
 
@@ -27,7 +27,6 @@ export default function PageLayout({ children }: PageLayoutProps) {
   const prevChildrenRef = useRef<React.ReactNode>(children);
   const [direction, setDirection] = useState<'left' | 'right'>('right');
   const pathname = usePathname();
-  const router = useRouter();
   const previousPathnameRef = useRef<string>(pathname);
   const [isMounted, setIsMounted] = useState(false);
   const [nextHref, setNextHref] = useState<string | null>(null);
@@ -39,12 +38,11 @@ export default function PageLayout({ children }: PageLayoutProps) {
     setIsDark(darkModeEnabled);
     
     // Set mounted state and initialize content only once
-    if (!isMounted) {
-      setIsMounted(true);
-      setOldContent(children);
-      setNewContent(null); // Start with no new content until transition
-      previousPathnameRef.current = pathname;
-    }
+    setIsMounted(true);
+    setOldContent(children);
+    setNewContent(null); // Start with no new content until transition
+    previousPathnameRef.current = pathname;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // Event listener for page transitions
@@ -147,11 +145,7 @@ export default function PageLayout({ children }: PageLayoutProps) {
     setPhotoLoaded(true);
   }, []);
 
-  // No longer need this - using TransitionLink component instead
-  const handleNavigation = (href: string) => {
-    // This function is now deprecated but kept for reference
-    // Navigation is handled by TransitionLink component
-  };
+
 
   return (
     <div className={`min-h-screen transition-colors duration-300 ${isDark ? 'dark' : ''}`}>

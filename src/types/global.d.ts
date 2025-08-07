@@ -14,7 +14,13 @@ declare global {
       url: string;
       file?: File;
     }>;
-    updateAdminMusicTracks?: (tracks: any[]) => void;
+    updateAdminMusicTracks?: (tracks: Array<{
+      id: string;
+      title: string;
+      artist: string;
+      url: string;
+      file?: File;
+    }>) => void;
   }
 }
 
