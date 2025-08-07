@@ -24,12 +24,10 @@ export default function PageLayout({ children }: PageLayoutProps) {
   const [isTransitioning, setIsTransitioning] = useState(false);
   const [oldContent, setOldContent] = useState<React.ReactNode>(children);
   const [newContent, setNewContent] = useState<React.ReactNode>(null);
-  const prevChildrenRef = useRef<React.ReactNode>(children);
   const [direction, setDirection] = useState<'left' | 'right'>('right');
   const pathname = usePathname();
   const previousPathnameRef = useRef<string>(pathname);
   const [isMounted, setIsMounted] = useState(false);
-  const [nextHref, setNextHref] = useState<string | null>(null);
 
   // Initialize theme and mounting
   useEffect(() => {
@@ -53,9 +51,6 @@ export default function PageLayout({ children }: PageLayoutProps) {
     const handleTransitionStart = (event: CustomEvent<{href: string}>) => {
       const targetHref = event.detail.href;
       console.log('Transition start detected to:', targetHref);
-      
-      // Store the next href
-      setNextHref(targetHref);
       
       // Determine direction based on page order
       const fromIndex = PAGES.indexOf(pathname);
@@ -105,20 +100,11 @@ export default function PageLayout({ children }: PageLayoutProps) {
         setOldContent(children);
         setIsTransitioning(false);
         previousPathnameRef.current = pathname;
-        setNextHref(null);
       }, 800); // Full animation duration (0.4s exit + 0.4s entry)
       
       return () => clearTimeout(animationTimer);
     }
   }, [pathname, children, isMounted, isTransitioning]);
-  
-  // Update content ref when not transitioning
-  useEffect(() => {
-    if (!isTransitioning && isMounted) {
-      prevChildrenRef.current = children;
-    }
-  }, [children, isTransitioning, isMounted]);
-
 
   // Content zone settings
   const contentZoneSettings = {
